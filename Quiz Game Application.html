@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Quiz Game</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #121212;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .quiz-container {
+      max-width: 600px;
+      margin: auto;
+      background: #222;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #00ccff88;
+    }
+
+    .question {
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .option {
+      padding: 10px;
+      background: #333;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .option:hover {
+      background: #00ccff;
+    }
+
+    .score-section {
+      font-size: 24px;
+      margin-top: 20px;
+    }
+
+    .btn {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #00ccff;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    .btn:hover {
+      background-color: #00aacc;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-container" id="quiz">
+    <div class="question" id="question">Loading question...</div>
+    <div class="options" id="options"></div>
+    <button class="btn" onclick="nextQuestion()">Next</button>
+    <div class="score-section" id="score" style="display: none;"></div>
+  </div>
+
+  <script>
+    const quizData = [
+      {
+        question: "What is the capital of France?",
+        options: ["Paris", "London", "Berlin", "Madrid"],
+        answer: "Paris"
+      },
+      {
+        question: "Which language runs in a web browser?",
+        options: ["Python", "Java", "C++", "JavaScript"],
+        answer: "JavaScript"
+      },
+      {
+        question: "Which year was HTML5 released?",
+        options: ["2008", "2014", "2012", "2010"],
+        answer: "2014"
+      }
+    ];
+
+    let currentQuestion = 0;
+    let score = 0;
+    let selectedAnswer = null;
+
+    const questionEl = document.getElementById("question");
+    const optionsEl = document.getElementById("options");
+    const scoreEl = document.getElementById("score");
+
+    function loadQuestion() {
+      const questionData = quizData[currentQuestion];
+      questionEl.textContent = questionData.question;
+      optionsEl.innerHTML = "";
+
+      questionData.options.forEach(option => {
+        const button = document.createElement("button");
+        button.classList.add("option");
+        button.textContent = option;
+        button.onclick = () => {
+          selectedAnswer = option;
+          document.querySelectorAll(".option").forEach(btn => btn.style.background = "#333");
+          button.style.background = "#00cc44";
+        };
+        optionsEl.appendChild(button);
+      });
+    }
+
+    function nextQuestion() {
+      if (!selectedAnswer) {
+        alert("Please select an answer!");
+        return;
+      }
+
+      if (selectedAnswer === quizData[currentQuestion].answer) {
+        score++;
+      }
+
+      currentQuestion++;
+      selectedAnswer = null;
+
+      if (currentQuestion < quizData.length) {
+        loadQuestion();
+      } else {
+        showScore();
+      }
+    }
+
+    function showScore() {
+      document.getElementById("question").style.display = "none";
+      document.getElementById("options").style.display = "none";
+      document.querySelector(".btn").style.display = "none";
+      scoreEl.style.display = "block";
+      scoreEl.textContent = `Your score: ${score} / ${quizData.length}`;
+    }
+
+    // Load first question on page load
+    loadQuestion();
+  </script>
+
+</body>
+</html>
